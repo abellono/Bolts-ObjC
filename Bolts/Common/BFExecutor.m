@@ -99,7 +99,7 @@ __attribute__((noinline)) static size_t remaining_stack_size(size_t *restrict to
 }
 
 + (instancetype)executorWithBlock:(void(^)(void(^block)(void)))block {
-    return [[self alloc] initWithBlock:block];
+    return [[BFExecutor alloc] initWithBlock:block];
 }
 
 + (instancetype)executorWithDispatchQueue:(dispatch_queue_t)queue {

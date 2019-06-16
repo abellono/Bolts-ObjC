@@ -91,7 +91,7 @@ typedef __nullable id(^BFContinuationBlock)(BFTask<ResultType> *t);
  @param millis The approximate number of milliseconds to wait before the
  task will be finished (with result == nil).
  */
-+ (BFTask<BFVoid> *)taskWithDelay:(int)millis;
++ (BFTask<BFVoid> *)taskWithDelay:(uint)millis;
 
 /*!
  Returns a task that will be completed a certain amount of time in the future.
@@ -99,7 +99,7 @@ typedef __nullable id(^BFContinuationBlock)(BFTask<ResultType> *t);
  task will be finished (with result == nil).
  @param token The cancellation token (optional).
  */
-+ (BFTask<BFVoid> *)taskWithDelay:(int)millis cancellationToken:(nullable BFCancellationToken *)token;
++ (BFTask<BFVoid> *)taskWithDelay:(uint)millis cancellationToken:(nullable BFCancellationToken *)token;
 
 /*!
  Returns a task that will be completed after the given block completes with

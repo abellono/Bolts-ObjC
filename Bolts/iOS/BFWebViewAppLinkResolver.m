@@ -63,7 +63,7 @@ static NSString *const BFWebViewAppLinkResolverShouldFallbackKey = @"should_fall
     }
 }
 
-- (void)webViewDidStartLoad:(UIWebView *)webView {
+- (void)webViewDidStartLoad:(__unused UIWebView *)webView {
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
@@ -72,7 +72,10 @@ static NSString *const BFWebViewAppLinkResolverShouldFallbackKey = @"should_fall
     }
 }
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+- (BOOL)webView:(UIWebView *)webView
+shouldStartLoadWithRequest:(__unused NSURLRequest *)request
+ navigationType:(__unused UIWebViewNavigationType)navigationType {
+    
     if (self.hasLoaded) {
         // Consider loading a second resource to be "success", since it indicates an inner frame
         // or redirect is happening. We can run the tag extraction script at this point.

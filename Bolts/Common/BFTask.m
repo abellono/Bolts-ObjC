@@ -17,6 +17,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+void warnBlockingOperationOnMainThread(void);
+
 __attribute__ ((noinline)) void warnBlockingOperationOnMainThread() {
     NSLog(@"Warning: A long-running operation is being executed on the main thread. \n"
           " Break on warnBlockingOperationOnMainThread() to debug.");
@@ -199,22 +201,22 @@ NSString *const BFTaskMultipleErrorsUserInfoKey = @"errors";
 }
 
 
-+ (BFTask<BFVoid> *)taskWithDelay:(int)millis {
++ (BFTask<BFVoid> *)taskWithDelay:(uint)millis {
     BFTaskCompletionSource *tcs = [BFTaskCompletionSource taskCompletionSource];
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, millis * NSEC_PER_MSEC);
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(millis * NSEC_PER_MSEC));
     dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
         tcs.result = nil;
     });
     return tcs.task;
 }
 
-+ (BFTask<BFVoid> *)taskWithDelay:(int)millis cancellationToken:(nullable BFCancellationToken *)token {
++ (BFTask<BFVoid> *)taskWithDelay:(uint)millis cancellationToken:(nullable BFCancellationToken *)token {
     if (token.cancellationRequested) {
         return [BFTask cancelledTask];
     }
 
     BFTaskCompletionSource *tcs = [BFTaskCompletionSource taskCompletionSource];
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, millis * NSEC_PER_MSEC);
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(millis * NSEC_PER_MSEC));
     dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
         if (token.cancellationRequested) {
             [tcs cancel];
@@ -226,7 +228,7 @@ NSString *const BFTaskMultipleErrorsUserInfoKey = @"errors";
 }
 
 + (instancetype)taskFromExecutor:(BFExecutor *)executor withBlock:(nullable id (^)(void))block {
-    return [[self taskWithResult:nil] continueWithExecutor:executor withBlock:^id(BFTask *task) {
+    return [[self taskWithResult:nil] continueWithExecutor:executor withBlock:^id(__unused id _) {
         return block();
     }];
 }
@@ -413,7 +415,7 @@ NSString *const BFTaskMultipleErrorsUserInfoKey = @"errors";
 #pragma mark - Syncing Task (Avoid it)
 
 - (void)warnOperationOnMainThread {
-//    warnBlockingOperationOnMainThread();
+    warnBlockingOperationOnMainThread();
 }
 
 - (void)waitUntilFinished {

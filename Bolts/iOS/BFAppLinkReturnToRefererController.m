@@ -109,11 +109,11 @@ static const CFTimeInterval kBFViewAnimationDuration = 0.25f;
 
 #pragma mark - BFAppLinkReturnToRefererViewDelegate
 
-- (void)returnToRefererViewDidTapInsideCloseButton:(BFAppLinkReturnToRefererView *)view {
+- (void)returnToRefererViewDidTapInsideCloseButton:(__unused id)view {
     [self closeViewAnimated:YES explicitlyClosed:YES];
 }
 
-- (void)returnToRefererViewDidTapInsideLink:(BFAppLinkReturnToRefererView *)view
+- (void)returnToRefererViewDidTapInsideLink:(__unused id)view
                                        link:(BFAppLink *)link {
     [self openRefererAppLink:link];
     [self closeViewAnimated:NO explicitlyClosed:NO];
@@ -152,7 +152,7 @@ static const CFTimeInterval kBFViewAnimationDuration = 0.25f;
     }
 }
 
-- (void)orientationDidChange:(NSNotificationCenter *)notification {
+- (void)orientationDidChange:(__unused id)notification {
     if (_navigationController && !_view.closed && CGRectGetHeight(_view.bounds) > 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self moveNavigationBar];
@@ -198,7 +198,7 @@ static const CFTimeInterval kBFViewAnimationDuration = 0.25f;
     if (animated) {
         [UIView animateWithDuration:kBFViewAnimationDuration animations:^{
             closer();
-        } completion:^(BOOL finished) {
+        } completion:^(__unused BOOL _) {
             if (explicitlyClosed) {
                 self->_view.closed = YES;
             }

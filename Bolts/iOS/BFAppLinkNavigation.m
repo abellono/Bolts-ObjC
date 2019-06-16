@@ -62,7 +62,7 @@ static id<BFAppLinkResolving> defaultResolver;
 #endif
 }
 
-- (NSURL *)appLinkURLWithTargetURL:(NSURL *)targetUrl error:(NSError **)error {
+- (NSURL *)appLinkURLWithTargetURL:(NSURL *)targetUrl error:(NSError * __autoreleasing *)error {
     NSMutableDictionary *appLinkData = [NSMutableDictionary dictionaryWithDictionary:self.appLinkData ?: @{}];
 
     // Add applink protocol data
@@ -99,7 +99,7 @@ static id<BFAppLinkResolving> defaultResolver;
     }
 }
 
-- (BFAppLinkNavigationType)navigate:(NSError **)error {
+- (BFAppLinkNavigationType)navigate:(NSError * __autoreleasing *)error {
     NSURL *openedURL = nil;
     NSError *encodingError = nil;
     BFAppLinkNavigationType retType = BFAppLinkNavigationTypeFailure;
@@ -230,7 +230,7 @@ static id<BFAppLinkResolving> defaultResolver;
                                }];
 }
 
-+ (BFAppLinkNavigationType)navigateToAppLink:(BFAppLink *)link error:(NSError **)error {
++ (BFAppLinkNavigationType)navigateToAppLink:(BFAppLink *)link error:(NSError * __autoreleasing *)error {
     return [[BFAppLinkNavigation navigationWithAppLink:link
                                                 extras:nil
                                            appLinkData:nil] navigate:error];

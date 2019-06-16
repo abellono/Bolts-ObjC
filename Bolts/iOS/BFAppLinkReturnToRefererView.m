@@ -253,11 +253,11 @@ static const CGFloat BFCloseButtonHeight = 12.0;
     return _refererAppLink && _refererAppLink.targets[0];
 }
 
-- (void)closeButtonTapped:(id)sender {
+- (void)closeButtonTapped:(__unused id)sender {
     [_delegate returnToRefererViewDidTapInsideCloseButton:self];
 }
 
-- (void)onTapInside:(UIGestureRecognizer *)sender {
+- (void)onTapInside:(__unused id)sender {
     [_delegate returnToRefererViewDidTapInsideLink:self link:_refererAppLink];
 }
 
