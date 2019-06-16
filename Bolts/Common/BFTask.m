@@ -11,6 +11,7 @@
 #import "BFTask.h"
 
 #import <libkern/OSAtomic.h>
+#import <stdatomic.h>
 
 #import "Bolts.h"
 
@@ -98,12 +99,12 @@ NSString *const BFTaskMultipleErrorsUserInfoKey = @"errors";
 }
 
 + (instancetype)taskForCompletionOfAllTasks:(nullable NSArray<BFTask *> *)tasks {
-    __block int32_t total = (int32_t)tasks.count;
+    __block atomic_int total = ATOMIC_VAR_INIT(tasks.count);
     if (total == 0) {
         return [self taskWithResult:nil];
     }
 
-    __block int32_t cancelled = 0;
+    __block atomic_int cancelled = ATOMIC_VAR_INIT(0);
     NSObject *lock = [[NSObject alloc] init];
     NSMutableArray *errors = [NSMutableArray array];
 
@@ -115,10 +116,10 @@ NSString *const BFTaskMultipleErrorsUserInfoKey = @"errors";
                     [errors addObject:t.error];
                 }
             } else if (t.cancelled) {
-                OSAtomicIncrement32Barrier(&cancelled);
+                atomic_fetch_add(&cancelled, 1);
             }
 
-            if (OSAtomicDecrement32Barrier(&total) == 0) {
+            if (atomic_fetch_sub(&total, 1) == 1) {
                 if (errors.count > 0) {
                     if (errors.count == 1) {
                         tcs.error = [errors firstObject];
@@ -128,7 +129,7 @@ NSString *const BFTaskMultipleErrorsUserInfoKey = @"errors";
                                                          userInfo:@{ BFTaskMultipleErrorsUserInfoKey: errors }];
                         tcs.error = error;
                     }
-                } else if (cancelled > 0) {
+                } else if (atomic_load(&cancelled) > 0) {
                     [tcs cancel];
                 } else {
                     tcs.result = nil;
@@ -148,13 +149,13 @@ NSString *const BFTaskMultipleErrorsUserInfoKey = @"errors";
 
 + (instancetype)taskForCompletionOfAnyTask:(nullable NSArray<BFTask *> *)tasks
 {
-    __block int32_t total = (int32_t)tasks.count;
+    __block atomic_int total = ATOMIC_VAR_INIT(tasks.count);
     if (total == 0) {
         return [self taskWithResult:nil];
     }
     
-    __block int completed = 0;
-    __block int32_t cancelled = 0;
+    __block atomic_int completed = ATOMIC_VAR_INIT(0);
+    __block atomic_int cancelled = ATOMIC_VAR_INIT(0);
     
     NSObject *lock = [NSObject new];
     NSMutableArray<NSError *> *errors = [NSMutableArray new];
@@ -167,16 +168,17 @@ NSString *const BFTaskMultipleErrorsUserInfoKey = @"errors";
                     [errors addObject:t.error];
                 }
             } else if (t.cancelled) {
-                OSAtomicIncrement32Barrier(&cancelled);
+                atomic_fetch_add(&cancelled, 1);
             } else {
-                if(OSAtomicCompareAndSwap32Barrier(0, 1, &completed)) {
+                int expected = 0;
+                if(atomic_compare_exchange_strong(&completed, &expected, 1)) {
                     [source setResult:t.result];
                 }
             }
-            
-            if (OSAtomicDecrement32Barrier(&total) == 0 &&
-                OSAtomicCompareAndSwap32Barrier(0, 1, &completed)) {
-                if (cancelled > 0) {
+
+            int expected = 0;
+            if (atomic_fetch_sub(&total, 1) == 1 && atomic_compare_exchange_strong(&completed, &expected, 1)) {
+                if (atomic_load(&cancelled) > 0) {
                     [source cancel];
                 } else if (errors.count > 0) {
                     if (errors.count == 1) {
@@ -411,7 +413,7 @@ NSString *const BFTaskMultipleErrorsUserInfoKey = @"errors";
 #pragma mark - Syncing Task (Avoid it)
 
 - (void)warnOperationOnMainThread {
-    warnBlockingOperationOnMainThread();
+//    warnBlockingOperationOnMainThread();
 }
 
 - (void)waitUntilFinished {
