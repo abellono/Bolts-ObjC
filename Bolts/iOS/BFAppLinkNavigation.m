@@ -111,7 +111,8 @@ static id<BFAppLinkResolving> defaultResolver;
             if (error) {
                 *error = encodingError;
             }
-        } else if ([[UIApplication sharedApplication] openURL:appLinkAppURL]) {
+        } else if ([[UIApplication sharedApplication] canOpenURL:appLinkAppURL]) {
+            [[UIApplication sharedApplication] openURL:appLinkAppURL options:@{} completionHandler:nil];
             retType = BFAppLinkNavigationTypeApp;
             openedURL = appLinkAppURL;
             break;
@@ -126,8 +127,9 @@ static id<BFAppLinkResolving> defaultResolver;
             if (error) {
                 *error = encodingError;
             }
-        } else if ([[UIApplication sharedApplication] openURL:appLinkBrowserURL]) {
+        } else if ([[UIApplication sharedApplication] canOpenURL:appLinkBrowserURL]) {
             // This was a browser navigation.
+            [[UIApplication sharedApplication] openURL:appLinkBrowserURL options:@{} completionHandler:nil];
             retType = BFAppLinkNavigationTypeBrowser;
             openedURL = appLinkBrowserURL;
         }
