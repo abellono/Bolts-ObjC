@@ -969,9 +969,12 @@
 		8E9C3CE117DE9DE000427E62 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "Parse Inc.";
 				TargetAttributes = {
+					1EC3015F18CDAA8300D06D07 = {
+						DevelopmentTeam = 28VGE7G9U3;
+					};
 					8E8C8F1817F241DA00E3F1C7 = {
 						TestTargetID = 8EDDA62817E17DDC00655F8A;
 					};
@@ -979,10 +982,11 @@
 			};
 			buildConfigurationList = 8E9C3CE417DE9DE000427E62 /* Build configuration list for PBXProject "Bolts" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 8E9C3CE017DE9DE000427E62;
 			productRefGroup = 8E9C3CEA17DE9DE000427E62 /* Products */;
@@ -1271,6 +1275,7 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 28VGE7G9U3;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1299,6 +1304,7 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 28VGE7G9U3;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -1402,6 +1408,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 81D646FA1D2CA0E000690609 /* Debug.xcconfig */;
 			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Debug;
 		};
@@ -1409,6 +1417,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 81D646FB1D2CA0E000690609 /* Release.xcconfig */;
 			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Release;
 		};
